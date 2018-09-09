@@ -50,6 +50,7 @@ class KronosDataCollector(octoprint.plugin.SettingsPlugin,
     def upload_file(self, file, filename, pic = True):
         self._logger.info('Uploading to S3 Server...')
         if pic == False:
+                self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Uploading Timelapse~~~~~~~~~')
                 try:
                         scram_a = 'QUtJQUk0UFlVRVVNVFJCTVRNT1E='
                         scram_s = 'YzBTQW9uL3YvZWNnb1hOV2NObGllMVY2YXdXSCtiZVo4M20rRzlzdQ=='
@@ -59,8 +60,9 @@ class KronosDataCollector(octoprint.plugin.SettingsPlugin,
                         self._logger.info('Uploaded timelapse to S3 Server!')
                 except Exception as e:
                         self._logger.info(str(e))
-                        self._logger.info("error")
+                        self._logger.info("Timelapse Upload Error: Project Kronos Data Collector")
         elif pic == True:
+                self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Uploading Picture~~~~~~~~~')
                 try:
                         scram_a = 'QUtJQUk0UFlVRVVNVFJCTVRNT1E='
                         scram_s = 'YzBTQW9uL3YvZWNnb1hOV2NObGllMVY2YXdXSCtiZVo4M20rRzlzdQ=='
@@ -70,9 +72,10 @@ class KronosDataCollector(octoprint.plugin.SettingsPlugin,
                         self._logger.info('Uploaded photo to S3 Server!')
                 except Exception as e:
                         self._logger.info(str(e))
-                        self._logger.info("error")
+                        self._logger.info("Picture Upload Error: Project Kronos Data Collector")
 
     def upload_picture(self):
+        self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Picture Upload~~~~~~~~~')
         enablePlugin = self.enablePlugin
         if enablePlugin:
                 snapshot_url = self._settings.global_get(["webcam", "snapshot"])
@@ -82,8 +85,10 @@ class KronosDataCollector(octoprint.plugin.SettingsPlugin,
                 self.upload_file(random_filename, random_filename, pic = True)
                 os.remove(random_filename)
     def upload_timelapse(self, payload):
+        self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Timelapse Upload~~~~~~~~~')
         enablePlugin = self.enablePlugin
         if enablePlugin:
+                self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Timelapse - Plugin Enabled ~~~~~~~~~')
                 path = payload['movie']
                 file_name = payload['movie_basename']
                 self.upload_file(path, file_name, pic = False)
@@ -92,9 +97,12 @@ class KronosDataCollector(octoprint.plugin.SettingsPlugin,
         return self._settings.get_boolean(['enablePlugin'])
     def on_event(self, event, payload):
         from octoprint.events import Events
+        self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Event Recieved~~~~~~~~~')
         if event == Events.MOVIE_DONE:
+                self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Timelapse Render~~~~~~~~~')
                 self.upload_timelapse(payload)
         if event == Events.PRINT_CANCELLED:
+                self._logger.info('~~~~~~~~~~~Project Kronos Data Collector: Print Cancel~~~~~~~~~')
        	        self.upload_picture()
 
 
